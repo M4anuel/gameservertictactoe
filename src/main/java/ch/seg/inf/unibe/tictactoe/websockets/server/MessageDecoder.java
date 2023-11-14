@@ -16,15 +16,20 @@ public class MessageDecoder implements Decoder.Text<Message> {
         @Override
         public Message deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
-
             // TODO:
             //   - read the property (jsonObject.get(...)...) "messageType" (using MessageEncoder.MESSAGE_TYPE_FIELD)
             //   - create and return Message of type = "LoginMessage" by: context.deserialize(json, LoginMessage.class)
             //   - create and return Message of type = "MoveMessage" by: context.deserialize(json, MoveMessage.class)
+            String messageType = jsonObject.get(MessageEncoder.MESSAGE_TYPE_FIELD).getAsString();
+            if (messageType.equals("LoginMessage")) {
+                return context.deserialize(json, LoginMessage.class);
+            } else if (messageType.equals("MoveMessage")) {
+                return context.deserialize(json, MoveMessage.class);
+            }
             return new Message() {
                 @Override
                 public String toString() {
-                    return "TODO: decode message";
+                    return "Something went terribly wrong!";
                 }
             };
         }

@@ -46,7 +46,16 @@ public class ServerWebsocket {
     }
 
     private void executeCommand(Session session, Message message) {
-        System.out.println("TODO: create and execute command: " + message);
+        System.out.println("Command: "+message);
+        if (message instanceof LoginMessage) {
+            System.out.println("received Login Command");
+            LoginCommand loginCommand = new LoginCommand(session, (LoginMessage) message);
+            loginCommand.execute();
+        } else if (message instanceof MoveMessage) {
+            System.out.println("received Move Command");
+            MoveCommand moveCommand = new MoveCommand(session, (MoveMessage) message);
+            moveCommand.execute();
+        } else System.out.println("Message not known");
         // TODO:
         //   - create and execute LoginCommand for Message of subtype LoginMessage
         //   - create and execute MoveCommand for Message of subtype MoveMessage

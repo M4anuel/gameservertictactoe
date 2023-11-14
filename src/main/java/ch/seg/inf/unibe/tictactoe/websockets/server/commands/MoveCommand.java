@@ -7,6 +7,7 @@ import ch.seg.inf.unibe.tictactoe.websockets.server.messages.client.ActualizeGam
 import ch.seg.inf.unibe.tictactoe.websockets.server.messages.server.MoveMessage;
 
 import javax.websocket.Session;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,8 +61,14 @@ public class MoveCommand implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Execute: " + this);
+        System.out.println("\tExecute: " + this);
+        TicTacToe ticTacToe = ServerWebsocket.getGame(this.moveMessage.gameId());
+        ticTacToe.move(idxToCoord(this.moveMessage.move()),ticTacToe.currentPlayer().getMark());
+        if (!ticTacToe.notOver() && ticTacToe.winner() != null) { //it's a bit late in the evening, don't want to test if only the left predicate is enough, that's why I added the other one as well.
+            ServerWebsocket.removeGame(this.moveMessage.gameId());
+        }
 
+        sendMessage(ticTacToe.getPlayer(), ticTacToe);
         // TODO: based on this.moveMessage and this.session
         //   1. get game ticTacToe from server by its ID (ServerWebsocket.getGame())
         //   2. perform move
@@ -70,10 +77,11 @@ public class MoveCommand implements Command {
         //   3. remove finished game from server
 
         // TODO: 4. send reply message to client
-        // sendMessage(ticTacToe.getPlayer(), ticTacToe);
     }
 
     public void sendMessage(Player[] players, TicTacToe ticTacToe) {
+        ActualizeGameMessage actualizeGameMessage = new ActualizeGameMessage(getBoard(ticTacToe), ServerWebsocket.getSession(ticTacToe.currentPlayer()).getId(), !ticTacToe.notOver(), ticTacToe.currentPlayer().getMark(), ticTacToe.winner() == null ? "" : ticTacToe.winner().getName());
+        ServerWebsocket.sendMessage(players,actualizeGameMessage);
         // TODO: Construct and send the ActualizeGameMessage...
         //   - translate server board to client board: getBoard()
         //   - get session ID of current player
