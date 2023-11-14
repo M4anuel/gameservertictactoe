@@ -80,7 +80,10 @@ public class MoveCommand implements Command {
     }
 
     public void sendMessage(Player[] players, TicTacToe ticTacToe) {
-        ActualizeGameMessage actualizeGameMessage = new ActualizeGameMessage(getBoard(ticTacToe), ServerWebsocket.getSession(ticTacToe.currentPlayer()).getId(), !ticTacToe.notOver(), ticTacToe.currentPlayer().getMark(), ticTacToe.winner() == null ? "" : ticTacToe.winner().getName());
+        ActualizeGameMessage actualizeGameMessage = new ActualizeGameMessage(
+                getBoard(ticTacToe), ServerWebsocket.getSession(ticTacToe.currentPlayer()).getId(),
+                !ticTacToe.notOver(), ticTacToe.currentPlayer().getMark(),
+                ticTacToe.winner() == null ? "" : ticTacToe.winner().getName());
         ServerWebsocket.sendMessage(players,actualizeGameMessage);
         // TODO: Construct and send the ActualizeGameMessage...
         //   - translate server board to client board: getBoard()
