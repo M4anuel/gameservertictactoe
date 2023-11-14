@@ -15,7 +15,7 @@ window.onload = function initial() {
     }
 };
 
-websocket.onmessage = function (evnt) {
+websocket.onmessage = function (event) {
     console.log(event);
     executeCommand(event.data);
 };
